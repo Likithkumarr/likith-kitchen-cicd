@@ -35,33 +35,14 @@ jobs:
       - name: Build Docker Image
         working-directory: .
         run: |
-          docker build -t likith-kitchen:ci .
+          docker build -t likithkumaro/likith-kitchen:latest .
 
-      - name: Run Docker Container
-        working-directory: .
-        run: |
-          docker run -d \
-            --name likith-kitchen-ci \
-            -p 8000:8000 \
-            likith-kitchen:ci
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Wait for Django
+      - name: Push Docker Image
         run: |
-          sleep 5
-
-      - name: Check Docker Container
-        working-directory: .
-        run: |
-          docker ps
-
-      - name: Show Docker Logs
-        if: always()
-        working-directory: .
-        run: |
-          docker logs likith-kitchen-ci
-
-      - name: Stop Docker Container
-        if: always()
-        working-directory: .
-        run: |
-          docker stop likith-kitchen-ci || true
+          docker push likithkumaro/likith-kitchen:latest
