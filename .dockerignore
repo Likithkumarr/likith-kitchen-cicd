@@ -1,0 +1,37 @@
+# Git
+.git
+.gitignore
+.github
+
+# Virtual environments
+myenv/
+venv/
+env/
+.venv/
+
+# Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment files
+.env
+.env.local
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local Database
+db.sqlite3
+db.sqlite3-journal
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+
