@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row" style="display: flex; gap: 30px; flex-wrap: wrap;">
+  <div style="flex: 2; min-width: 300px;">
+    <div class="card" style="padding: 30px; border-radius: 16px;">
+      <h2 class="mb-4"><i class="fa-solid fa-truck-fast"></i> Shipping Details</h2>
+      <form method="post" action="/checkout/">
+        {% csrf_token %}
+        <div class="mb-4" style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom: 5px; color: var(--text-muted);">Full Name</label>
+          <input type="text" name="full_name" class="form-control" required value="{{ request.user.username|default:'' }}">
+        </div>
+        <div class="mb-4" style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom: 5px; color: var(--text-muted);">Email Address</label>
+          <input type="email" name="email" class="form-control" required value="{{ request.user.email|default:'' }}">
+        </div>
+        <div class="mb-4" style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom: 5px; color: var(--text-muted);">Phone Number</label>
+          <input type="text" name="phone" class="form-control" required>
+        </div>
+        <div class="mb-4" style="margin-bottom: 15px;">
+          <label style="display:block; margin-bottom: 5px; color: var(--text-muted);">Delivery Address</label>
+          <textarea name="address" class="form-control" rows="3" required></textarea>
+        </div>
+        
+        <h3 class="mt-4 mb-4"><i class="fa-solid fa-money-bill-wave"></i> Payment Method</h3>
+        <select name="payment" class="form-control mb-4">
+          <option value="cod">Cash on Delivery</option>
+          <option value="upi">UPI (Scan QR at Delivery)</option>
+        </select>
+        
+        <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-check"></i> Complete Order</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-width: 300px;">
+    <div class="cart-summary">
+      <h3 class="mb-4">Order Total</h3>
+      <div class="summary-row summary-total">
+        <span>Total to Pay</span>
+        <span>₹{{ total }}</span>
+      </div>
+      <p class="text-muted mt-4 text-center"><small><i class="fa-solid fa-lock"></i> Secure Checkout</small></p>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

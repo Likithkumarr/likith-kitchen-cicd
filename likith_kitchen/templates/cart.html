@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="mb-4">
+  <h1><i class="fa-solid fa-cart-shopping"></i> Your Cart</h1>
+</div>
+
+{% if items %}
+<div class="row" style="display: flex; gap: 30px; flex-wrap: wrap;">
+  <div style="flex: 2; min-width: 300px;">
+    <div class="table-responsive">
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in items %}
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 15px;">
+                {% if p.image %}
+                  <img src="{{ p.image.url }}" alt="{{ p.name }}">
+                {% else %}
+                  <img src="https://ui-avatars.com/api/?name={{ p.name }}&background=f59e0b&color=fff&size=80" alt="{{ p.name }}">
+                {% endif %}
+                <strong>{{ p.name }}</strong>
+              </div>
+            </td>
+            <td>₹{{ p.price }}</td>
+            <td>{{ p.qty }}</td>
+            <td style="font-weight: 600;">₹{{ p.subtotal }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-width: 300px;">
+    <div class="cart-summary">
+      <h3 class="mb-4">Order Summary</h3>
+      
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span>₹{{ total }}</span>
+      </div>
+
+      {% if discount_amount > 0 %}
+      <div class="summary-row text-success">
+        <span>Discount ({{ request.session.discount }}%)</span>
+        <span>-₹{{ discount_amount }}</span>
+      </div>
+      {% endif %}
+
+      <div class="summary-row summary-total">
+        <span>Total</span>
+        <span>₹{{ final_total }}</span>
+      </div>
+
+      <form method="post" action="/apply-coupon/" class="search-bar" style="margin-bottom: 1.5rem; max-width: 100%;">
+        {% csrf_token %}
+        <input type="text" class="form-control" name="coupon" placeholder="Have a promo code?">
+        <button type="submit" class="btn btn-outline">Apply</button>
+      </form>
+
+      <a href="/checkout/" class="btn btn-primary btn-block"><i class="fa-solid fa-credit-card"></i> Proceed to Checkout</a>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="alert text-center" style="color: var(--text-muted); padding: 50px;">
+  <i class="fa-solid fa-basket-shopping fa-4x" style="margin-bottom: 20px; opacity: 0.5;"></i>
+  <h2>Your cart is empty</h2>
+  <p class="mb-4">Looks like you haven't added anything delicious yet.</p>
+  <a href="/menu/" class="btn btn-primary"><i class="fa-solid fa-utensils"></i> Browse Menu</a>
+</div>
+{% endif %}
+
+{% endblock %}

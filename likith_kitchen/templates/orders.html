@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mb-4">
+  <h1><i class="fa-solid fa-receipt"></i> Order History</h1>
+</div>
+
+{% if not request.user.is_authenticated %}
+<div class="alert text-center" style="padding: 50px;">
+  <i class="fa-solid fa-user-lock fa-4x mb-4" style="color: var(--text-muted); opacity: 0.5;"></i>
+  <h2>Please log in to view your orders.</h2>
+  <a href="/login/" class="btn btn-primary mt-4">Login</a>
+</div>
+{% elif orders %}
+<div class="table-responsive">
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Items</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td><strong>#{{ o.id }}</strong></td>
+        <td>{{ o.created_at|date:"M d, Y" }}</td>
+        <td>
+          <span class="badge" style="background: rgba(245,158,11,0.2); color: var(--accent); padding: 5px 10px; border-radius: 20px; font-size: 0.8rem;">
+            {{ o.status }}
+          </span>
+        </td>
+        <td style="font-weight: bold;">₹{{ o.total_amount }}</td>
+        <td>{{ o.items.count }} items</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="alert text-center" style="color: var(--text-muted); padding: 50px;">
+  <i class="fa-solid fa-box-open fa-4x mb-4" style="opacity: 0.5;"></i>
+  <h2>No orders found</h2>
+  <p>You haven't placed any orders yet.</p>
+</div>
+{% endif %}
+{% endblock %}

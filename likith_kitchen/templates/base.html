@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Likith's Kitchen - Premium Dining</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <!-- Modern Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/menu/">
+      <i class="fa-solid fa-utensils"></i> Likith’s Kitchen
+    </a>
+
+    <div class="navbar-nav">
+      <a class="nav-link" href="/menu/"><i class="fa-solid fa-book-open"></i> Menu</a>
+      <a class="nav-link" href="/cart/">
+        <i class="fa-solid fa-cart-shopping"></i> Cart ({{ request.session.cart_count|default:0 }})
+      </a>
+      <a class="nav-link" href="/orders/"><i class="fa-solid fa-receipt"></i> Orders</a>
+
+      {% if request.user.is_authenticated %}
+        <span class="nav-link text-accent"><i class="fa-solid fa-user"></i> {{ request.user.username }}</span>
+        <a class="nav-link" href="/logout/"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+      {% else %}
+        <a class="nav-link btn btn-primary btn-sm" href="/login/"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-success">
+        <i class="fa-solid fa-check-circle"></i> {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+  
+  {% if request.session.msg %}
+    <div class="alert alert-success">
+      <i class="fa-solid fa-check-circle"></i> {{ request.session.msg }}
+    </div>
+  {% endif %}
+
+  {% block content %}{% endblock %}
+</div>
+
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Likith's Kitchen. Crafted with passion.</p>
+  </div>
+</footer>
+
+</body>
+</html>
