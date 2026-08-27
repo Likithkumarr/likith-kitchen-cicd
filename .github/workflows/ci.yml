@@ -1,4 +1,4 @@
-name: Django CI
+name: Django CI/CD
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  # =========================
+  # 1. CI - Test Application
+  # =========================
   test:
     runs-on: self-hosted
 
@@ -32,8 +36,19 @@ jobs:
         run: |
           python manage.py test
 
+
+  # =========================
+  # 2. Build and Push Docker
+  # =========================
+  build:
+    runs-on: self-hosted
+    needs: test
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
       - name: Build Docker Image
-        working-directory: .
         run: |
           docker build -t likithkumaro/likith-kitchen:latest .
 
@@ -46,3 +61,36 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push likithkumaro/likith-kitchen:latest
+
+
+  # =========================
+  # 3. CD - Deploy Application
+  # =========================
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: Pull Latest Docker Image
+        run: |
+          docker pull likithkumaro/likith-kitchen:latest
+
+      - name: Stop Old Container
+        run: |
+          docker stop likith-kitchen || true
+
+      - name: Remove Old Container
+        run: |
+          docker rm likith-kitchen || true
+
+      - name: Start New Container
+        run: |
+          docker run -d \
+            -p 8000:8000 \
+            --name likith-kitchen \
+            likithkumaro/likith-kitchen:latest
+
+      - name: Health Check
+        run: |
+          sleep 5
+          curl --fail http://localhost:8000
