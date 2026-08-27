@@ -89,6 +89,9 @@ jobs:
             -p 8000:8000 \
             --name likith-kitchen \
             likithkumaro/likith-kitchen:latest
+      - name: Run Database Migrations
+        run: |
+          docker exec likith-kitchen python manage.py migrate --noinput
 
       - name: Health Check
         run: |
